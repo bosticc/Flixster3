@@ -52,5 +52,13 @@ public class Movie {
         return overview;
     }
 
+    public int getMovieId() {return movieId;}
 
+    public String getBackdropPathPath() {
+        return String.format("https://image.tmdb.org/t/p/w342/%s", backdropPath);
+    }
+
+    public String getPosterPath() {
+        return String.format("https://image.tmdb.org/t/p/w342/%s", posterPath);
+    }
 }

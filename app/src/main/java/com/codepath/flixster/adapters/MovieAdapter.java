@@ -1,6 +1,7 @@
 package com.codepath.flixster.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,8 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.flixster.DetailActivity;
 import com.codepath.flixster.R;
 import com.codepath.flixster.models.Movie;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -73,18 +77,31 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         }
 
         public void bind(final Movie movie) {
-            String imageUrl;
             tvTitle.setText(movie.getTitle());
             tvOverview.setText(movie.getOverview());
+            String imageUrl;
+            // If phone in land then set image url to backdrop image
             if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                imageUrl = movie.getBackdropPath();
+                imageUrl = movie.getBackdropPathPath();
+                //  else set to normal
             } else {
-                imageUrl = movie.getPath();
+                imageUrl = movie.getPosterPath();
             }
+
+            int radius = 20; // corner radius, higher value = more rounded
+            int margin = 5; // crop margin, set to 0 for corners with no crop
             Glide.with(context)
                     .load(imageUrl)
-                    .transform(new RoundedCornersTransformation(30, 5))
+                    .transform(new RoundedCornersTransformation(radius, margin))
                     .into(ivPoster);
+
+            // 1. Register click listener on the whole row
+            container.setOnClickListener(v -> {
+                // 2. Navigate to new activity on tap
+                Intent i = new Intent(context, DetailActivity.class);
+                i.putExtra("movie", Parcels.wrap(movie));
+                context.startActivity(i);
+            });
         }
     }
 }
